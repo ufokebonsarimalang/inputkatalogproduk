@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Input Katalog Toko</title>
+    <title>Admin Panel - Input Data Barang</title>
     <style>
         :root {
             --primary: #0284c7;
@@ -34,7 +34,7 @@
         .container {
             background: var(--card-bg);
             width: 100%;
-            max-width: 650px;
+            max-width: 600px;
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -68,9 +68,7 @@
             color: #334155;
         }
 
-        input[type="text"],
-        input[type="number"],
-        select {
+        input[type="text"] {
             width: 100%;
             padding: 10px 12px;
             border: 1px solid var(--border);
@@ -81,7 +79,7 @@
             transition: border-color 0.2s;
         }
 
-        input:focus, select:focus {
+        input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
@@ -123,6 +121,7 @@
             justify-content: center;
             align-items: center;
             gap: 10px;
+            margin-top: 10px;
         }
 
         .btn-submit:hover {
@@ -134,7 +133,6 @@
             cursor: not-allowed;
         }
 
-        /* Notifikasi Modal */
         .notif {
             display: none;
             position: fixed;
@@ -176,96 +174,64 @@
 
     <div class="container">
         <div class="header">
-            <h2>Form Input Data Katalog</h2>
-            <p>Masukkan spesifikasi barang untuk tampil di katalog</p>
+            <h2>Form Input Spesifikasi Barang</h2>
+            <p>Masukkan data untuk disimpan langsung ke Google Sheets</p>
         </div>
 
         <form id="formKatalog" onsubmit="kirimData(event)">
             <div class="grid-2">
                 <div class="form-group">
-                    <label for="brand">Brand</label>
+                    <label for="brand">Brand (Kolom A)</label>
                     <input type="text" id="brand" required placeholder="Contoh: GREE, Samsung">
                 </div>
                 <div class="form-group">
-                    <label for="tipe">Tipe</label>
+                    <label for="tipe">Tipe / Seri (Kolom B)</label>
                     <input type="text" id="tipe" required placeholder="Contoh: GWC-05MOO5">
                 </div>
             </div>
 
             <div class="grid-2">
-                                <div class="form-group">
-                    <label for="kategori">Kategori</label>
-                    <input type="text" id="kategori" required placeholder="Contoh: Elektronik">
+                <div class="form-group">
+                    <label for="kategori">Kategori (Kolom D)</label>
+                    <input type="text" id="kategori" required placeholder="Contoh: AC, TV, Kulkas">
                 </div>
-            </div>
-
-            <div class="grid-2">
                 <div class="form-group">
                     <label for="subKategori">Subkategori (Kolom E)</label>
-                    <input type="text" id="subKategori" placeholder="Contoh: AC,Smart TV,side by side">
+                    <input type="text" id="subKategori" placeholder="Contoh: AC Split, Smart TV">
                 </div>
-                
             </div>
 
             <fieldset class="spek-section">
                 <legend>Fitur & Spesifikasi Utama</legend>
                 <div class="grid-2">
                     <div class="form-group">
-                        <label for="spek1">Spek 1</label>
+                        <label for="spek1">Spek 1 (Kolom F)</label>
                         <input type="text" id="spek1" placeholder="Contoh: 0.5 PK">
                     </div>
                     <div class="form-group">
-                        <label for="spek2">Spek 2</label>
+                        <label for="spek2">Spek 2 (Kolom G)</label>
                         <input type="text" id="spek2" placeholder="Contoh: 350 Watt">
                     </div>
                 </div>
                 <div class="grid-2">
                     <div class="form-group">
-                        <label for="spek3">Spek 3</label>
+                        <label for="spek3">Spek 3 (Kolom H)</label>
                         <input type="text" id="spek3" placeholder="Contoh: R32 Eco Friendly">
                     </div>
                     <div class="form-group">
-                        <label for="spek4">Spek 4</label>
+                        <label for="spek4">Spek 4 (Kolom I)</label>
                         <input type="text" id="spek4" placeholder="Contoh: Garansi 5 Tahun">
                     </div>
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label for="spek5">Spek 5</label>
+                    <label for="spek5">Spek 5 / Deskripsi Tambahan (Kolom J)</label>
                     <input type="text" id="spek5" placeholder="Contoh: Triple Protection">
                 </div>
             </fieldset>
 
-            <div class="grid-2">
-                <div class="form-group">
-                    <label for="status">Status (Kolom L)</label>
-                    <select id="status">
-                        <option value="AKTIF">AKTIF</option>
-                        <option value="TIDAK AKTIF">TIDAK AKTIF</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="unggulan">Unggulan / Rekomendasi (Kolom M)</label>
-                    <select id="unggulan">
-                        <option value="TIDAK">TIDAK</option>
-                        <option value="YA">YA</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="grid-2">
-                <div class="form-group">
-                    <label for="urutan">Nomor Urutan Tampil (Kolom N)</label>
-                    <input type="number" id="urutan" value="1" min="1">
-                </div>
-                <div class="form-group">
-                    <label for="banner">Tag Banner Promo (Kolom O)</label>
-                    <input type="text" id="banner" placeholder="Contoh: Promo Merdeka, Hemat">
-                </div>
-            </div>
-
             <button type="submit" id="btnSubmit" class="btn-submit">
                 <div class="spinner" id="loadingSpinner"></div>
-                <span id="btnText">Simpan Produk Ke Katalog</span>
+                <span id="btnText">Simpan Data Barang</span>
             </button>
         </form>
     </div>
@@ -273,7 +239,7 @@
     <div id="toast" class="notif"></div>
 
     <script>
-        // GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
+        // ISI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
         const SCRIPT_URL = "URL_WEB_APP_ANDA_DI_SINI";
 
         function tampilkanNotif(pesan, jenis) {
@@ -294,29 +260,21 @@
             const spinner = document.getElementById('loadingSpinner');
             const btnText = document.getElementById('btnText');
 
-            // Kunci tombol & aktifkan loading animasi
             btnSubmit.disabled = true;
             spinner.style.display = 'block';
             btnText.innerText = 'Sedang Menyimpan...';
 
-            // Menyusun objek data sesuai kebutuhan fungsi `doPost` di Apps Script
             const payload = {
                 aksi: "tambah_barang",
                 brand: document.getElementById('brand').value.trim(),
                 tipe: document.getElementById('tipe').value.trim(),
-                harga: document.getElementById('harga').value,
                 kategori: document.getElementById('kategori').value.trim(),
                 subKategori: document.getElementById('subKategori').value.trim() || "-",
                 spek1: document.getElementById('spek1').value.trim() || "-",
                 spek2: document.getElementById('spek2').value.trim() || "-",
                 spek3: document.getElementById('spek3').value.trim() || "-",
                 spek4: document.getElementById('spek4').value.trim() || "-",
-                spek5: document.getElementById('spek5').value.trim() || "-",
-                foto: document.getElementById('foto').value.trim() || "-",
-                status: document.getElementById('status').value,
-                unggulan: document.getElementById('unggulan').value,
-                urutan: document.getElementById('urutan').value || 999,
-                banner: document.getElementById('banner').value.trim() || "-"
+                spek5: document.getElementById('spek5').value.trim() || "-"
             };
 
             fetch(SCRIPT_URL, {
@@ -326,9 +284,8 @@
             .then(res => res.json())
             .then(data => {
                 if(data.status === "sukses") {
-                    tampilkanNotif("Berhasil! Data produk masuk ke sheet KATALOG.", "sukses");
+                    tampilkanNotif("Berhasil! Data barang masuk ke sheet KATALOG.", "sukses");
                     document.getElementById('formKatalog').reset();
-                    document.getElementById('urutan').value = "1";
                 } else {
                     tampilkanNotif("Gagal: " + data.pesan, "gagal");
                 }
@@ -338,10 +295,9 @@
                 console.error(err);
             })
             .finally(() => {
-                // Kembalikan tombol ke keadaan semula
                 btnSubmit.disabled = false;
                 spinner.style.display = 'none';
-                btnText.innerText = 'Simpan Produk Ke Katalog';
+                btnText.innerText = 'Simpan Data Barang';
             });
         }
     </script>
