@@ -241,7 +241,6 @@
     <div id="toast" class="notif"></div>
 
     <script>
-        // ISI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqnu2yJWk3Bb8JPSVy8ZSZxs5Ae4VGSNpRJl1j3Qgkoj-27FQX_ys4-8qyyyrbXJhQ/exec";
 
         function tampilkanNotif(pesan, jenis) {
@@ -260,3 +259,48 @@
 
             const btnSubmit = document.getElementById('btnSubmit');
             const spinner = document.getElementById('loadingSpinner');
+            const btnText = document.getElementById('btnText');
+
+            btnSubmit.disabled = true;
+            spinner.style.display = 'block';
+            btnText.innerText = 'Sedang Menyimpan...';
+
+            const payload = {
+                aksi: "tambah_barang",
+                brand: document.getElementById('brand').value.trim().toUpperCase(),
+                tipe: document.getElementById('tipe').value.trim().toUpperCase(),
+                kategori: document.getElementById('kategori').value.trim().toUpperCase(),
+                subKategori: document.getElementById('subKategori').value.trim().toUpperCase() || "-",
+                spek1: document.getElementById('spek1').value.trim().toUpperCase() || "-",
+                spek2: document.getElementById('spek2').value.trim().toUpperCase() || "-",
+                spek3: document.getElementById('spek3').value.trim().toUpperCase() || "-",
+                spek4: document.getElementById('spek4').value.trim().toUpperCase() || "-",
+                spek5: document.getElementById('spek5').value.trim().toUpperCase() || "-"
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "sukses") {
+                    tampilkanNotif("Berhasil! Data barang masuk ke sheet KATALOG.", "sukses");
+                    document.getElementById('formKatalog').reset();
+                } else {
+                    tampilkanNotif("Gagal: " + data.pesan, "gagal");
+                }
+            })
+            .catch(err => {
+                tampilkanNotif("Terjadi gangguan jaringan atau URL Script salah.", "gagal");
+                console.error(err);
+            })
+            .finally(() => {
+                btnSubmit.disabled = false;
+                spinner.style.display = 'none';
+                btnText.innerText = 'Simpan Data Barang';
+            });
+        }
+    </script>
+</body>
+</html>
