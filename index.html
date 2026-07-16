@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Input Katalog Toko</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-hover: #0369a1;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 650px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h2 {
+            color: var(--primary);
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #334155;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fff;
+            color: var(--text);
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .spek-section {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .spek-section legend {
+            font-size: 13px;
+            font-weight: bold;
+            color: #475569;
+            padding: 0 8px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-submit:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* Notifikasi Modal */
+        .notif {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .notif.sukses { background-color: #10b981; }
+        .notif.gagal { background-color: #ef4444; }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h2>Form Input Data Katalog</h2>
+            <p>Masukkan spesifikasi barang untuk disimpan ke Google Sheets</p>
+        </div>
+
+        <form id="formKatalog" onsubmit="kirimData(event)">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="brand">Brand (Kolom A)</label>
+                    <input type="text" id="brand" required placeholder="Contoh: GREE, Samsung">
+                </div>
+                <div class="form-group">
+                    <label for="tipe">Tipe / Seri (Kolom B)</label>
+                    <input type="text" id="tipe" required placeholder="Contoh: GWC-05MOO5">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="harga">Harga (Kolom C)</label>
+                    <input type="number" id="harga" required placeholder="Contoh: 3500000">
+                </div>
+                <div class="form-group">
+                    <label for="kategori">Kategori (Kolom D)</label>
+                    <input type="text" id="kategori" required placeholder="Contoh: AC, TV, Kulkas">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="subKategori">Subkategori (Kolom E)</label>
+                    <input type="text" id="subKategori" placeholder="Contoh: AC Split, Smart TV">
+                </div>
+                <div class="form-group">
+                    <label for="foto">URL / Link Foto Produk (Kolom K)</label>
+                    <input type="text" id="foto" placeholder="https://link-gambar.com/foto.jpg">
+                </div>
+            </div>
+
+            <fieldset class="spek-section">
+                <legend>Fitur & Spesifikasi Utama</legend>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="spek1">Spek 1 (Kolom F)</label>
+                        <input type="text" id="spek1" placeholder="Contoh: 0.5 PK">
+                    </div>
+                    <div class="form-group">
+                        <label for="spek2">Spek 2 (Kolom G)</label>
+                        <input type="text" id="spek2" placeholder="Contoh: 350 Watt">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="spek3">Spek 3 (Kolom H)</label>
+                        <input type="text" id="spek3" placeholder="Contoh: R32 Eco Friendly">
+                    </div>
+                    <div class="form-group">
+                        <label for="spek4">Spek 4 (Kolom I)</label>
+                        <input type="text" id="spek4" placeholder="Contoh: Garansi 5 Tahun">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="spek5">Spek 5 / Deskripsi Tambahan (Kolom J)</label>
+                    <input type="text" id="spek5" placeholder="Contoh: Triple Protection">
+                </div>
+            </fieldset>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="status">Status (Kolom L)</label>
+                    <select id="status">
+                        <option value="AKTIF">AKTIF</option>
+                        <option value="TIDAK AKTIF">TIDAK AKTIF</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="unggulan">Unggulan / Rekomendasi (Kolom M)</label>
+                    <select id="unggulan">
+                        <option value="TIDAK">TIDAK</option>
+                        <option value="YA">YA</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="urutan">Nomor Urutan Tampil (Kolom N)</label>
+                    <input type="number" id="urutan" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="banner">Tag Banner Promo (Kolom O)</label>
+                    <input type="text" id="banner" placeholder="Contoh: Promo Merdeka, Hemat">
+                </div>
+            </div>
+
+            <button type="submit" id="btnSubmit" class="btn-submit">
+                <div class="spinner" id="loadingSpinner"></div>
+                <span id="btnText">Simpan Produk Ke Katalog</span>
+            </button>
+        </form>
+    </div>
+
+    <div id="toast" class="notif"></div>
+
+    <script>
+        // GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
+        const SCRIPT_URL = "URL_WEB_APP_ANDA_DI_SINI";
+
+        function tampilkanNotif(pesan, jenis) {
+            const toast = document.getElementById('toast');
+            toast.innerText = pesan;
+            toast.className = `notif ${jenis}`;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 4000);
+        }
+
+        function kirimData(e) {
+            e.preventDefault();
+
+            const btnSubmit = document.getElementById('btnSubmit');
+            const spinner = document.getElementById('loadingSpinner');
+            const btnText = document.getElementById('btnText');
+
+            // Kunci tombol & aktifkan loading animasi
+            btnSubmit.disabled = true;
+            spinner.style.display = 'block';
+            btnText.innerText = 'Sedang Menyimpan...';
+
+            // Menyusun objek data sesuai kebutuhan fungsi `doPost` di Apps Script
+            const payload = {
+                aksi: "tambah_barang",
+                brand: document.getElementById('brand').value.trim(),
+                tipe: document.getElementById('tipe').value.trim(),
+                harga: document.getElementById('harga').value,
+                kategori: document.getElementById('kategori').value.trim(),
+                subKategori: document.getElementById('subKategori').value.trim() || "-",
+                spek1: document.getElementById('spek1').value.trim() || "-",
+                spek2: document.getElementById('spek2').value.trim() || "-",
+                spek3: document.getElementById('spek3').value.trim() || "-",
+                spek4: document.getElementById('spek4').value.trim() || "-",
+                spek5: document.getElementById('spek5').value.trim() || "-",
+                foto: document.getElementById('foto').value.trim() || "-",
+                status: document.getElementById('status').value,
+                unggulan: document.getElementById('unggulan').value,
+                urutan: document.getElementById('urutan').value || 999,
+                banner: document.getElementById('banner').value.trim() || "-"
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "sukses") {
+                    tampilkanNotif("Berhasil! Data produk masuk ke sheet KATALOG.", "sukses");
+                    document.getElementById('formKatalog').reset();
+                    document.getElementById('urutan').value = "1";
+                } else {
+                    tampilkanNotif("Gagal: " + data.pesan, "gagal");
+                }
+            })
+            .catch(err => {
+                tampilkanNotif("Terjadi gangguan jaringan atau URL Script salah.", "gagal");
+                console.error(err);
+            })
+            .finally(() => {
+                // Kembalikan tombol ke keadaan semula
+                btnSubmit.disabled = false;
+                spinner.style.display = 'none';
+                btnText.innerText = 'Simpan Produk Ke Katalog';
+            });
+        }
+    </script>
+</body>
+</html>
