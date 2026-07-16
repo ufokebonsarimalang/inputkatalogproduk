@@ -177,67 +177,60 @@
     <div class="container">
         <div class="header">
             <h2>Form Input Data Katalog</h2>
-            <p>Masukkan spesifikasi barang untuk disimpan ke Google Sheets</p>
+            <p>Masukkan spesifikasi barang untuk tampil di katalog</p>
         </div>
 
         <form id="formKatalog" onsubmit="kirimData(event)">
             <div class="grid-2">
                 <div class="form-group">
-                    <label for="brand">Brand (Kolom A)</label>
+                    <label for="brand">Brand</label>
                     <input type="text" id="brand" required placeholder="Contoh: GREE, Samsung">
                 </div>
                 <div class="form-group">
-                    <label for="tipe">Tipe / Seri (Kolom B)</label>
+                    <label for="tipe">Tipe</label>
                     <input type="text" id="tipe" required placeholder="Contoh: GWC-05MOO5">
                 </div>
             </div>
 
             <div class="grid-2">
-                <div class="form-group">
-                    <label for="harga">Harga (Kolom C)</label>
-                    <input type="number" id="harga" required placeholder="Contoh: 3500000">
-                </div>
-                <div class="form-group">
-                    <label for="kategori">Kategori (Kolom D)</label>
-                    <input type="text" id="kategori" required placeholder="Contoh: AC, TV, Kulkas">
+                                <div class="form-group">
+                    <label for="kategori">Kategori</label>
+                    <input type="text" id="kategori" required placeholder="Contoh: Elektronik">
                 </div>
             </div>
 
             <div class="grid-2">
                 <div class="form-group">
                     <label for="subKategori">Subkategori (Kolom E)</label>
-                    <input type="text" id="subKategori" placeholder="Contoh: AC Split, Smart TV">
+                    <input type="text" id="subKategori" placeholder="Contoh: AC,Smart TV,side by side">
                 </div>
-                <div class="form-group">
-                    <label for="foto">URL / Link Foto Produk (Kolom K)</label>
-                    <input type="text" id="foto" placeholder="https://link-gambar.com/foto.jpg">
-                </div>
+                
             </div>
 
             <fieldset class="spek-section">
                 <legend>Fitur & Spesifikasi Utama</legend>
                 <div class="grid-2">
                     <div class="form-group">
-                        <label for="spek1">Spek 1 (Kolom F)</label>
+                        <label for="spek1">Spek 1</label>
                         <input type="text" id="spek1" placeholder="Contoh: 0.5 PK">
                     </div>
                     <div class="form-group">
-                        <label for="spek2">Spek 2 (Kolom G)</label>
+                        <label for="spek2">Spek 2</label>
                         <input type="text" id="spek2" placeholder="Contoh: 350 Watt">
                     </div>
                 </div>
                 <div class="grid-2">
                     <div class="form-group">
-                        <label for="spek3">Spek 3 (Kolom H)</label>
+                        <label for="spek3">Spek 3</label>
                         <input type="text" id="spek3" placeholder="Contoh: R32 Eco Friendly">
                     </div>
                     <div class="form-group">
-                        <label for="spek4">Spek 4 (Kolom I)</label>
+                        <label for="spek4">Spek 4</label>
                         <input type="text" id="spek4" placeholder="Contoh: Garansi 5 Tahun">
                     </div>
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label for="spek5">Spek 5 / Deskripsi Tambahan (Kolom J)</label>
+                    <label for="spek5">Spek 5</label>
                     <input type="text" id="spek5" placeholder="Contoh: Triple Protection">
                 </div>
             </fieldset>
