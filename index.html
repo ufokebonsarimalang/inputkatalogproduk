@@ -68,7 +68,7 @@
             color: #334155;
         }
 
-        /* Tampilan huruf otomatis kapital di awal kata saat diketik */
+        /* Membiarkan teks tampil natural sesuai yang diketikkan user */
         input[type="text"] {
             width: 100%;
             padding: 10px 12px;
@@ -78,7 +78,6 @@
             background-color: #fff;
             color: var(--text);
             transition: border-color 0.2s;
-            text-transform: capitalize; 
         }
 
         input:focus {
@@ -184,22 +183,22 @@
             <div class="grid-2">
                 <div class="form-group">
                     <label for="brand">Brand</label>
-                    <input type="text" id="brand" required placeholder="Contoh: Gree, Samsung">
+                    <input type="text" id="brand" required placeholder="Contoh: LG, Samsung">
                 </div>
                 <div class="form-group">
                     <label for="tipe">Tipe</label>
-                    <input type="text" id="tipe" required placeholder="Contoh: GWC-05MOO5">
+                    <input type="text" id="tipe" required placeholder="Contoh: 32LM550BPTA">
                 </div>
             </div>
 
             <div class="grid-2">
                 <div class="form-group">
                     <label for="kategori">Kategori</label>
-                    <input type="text" id="kategori" required placeholder="Contoh: Elektronik, Rumah Tangga">
+                    <input type="text" id="kategori" required placeholder="Contoh: Elektronik">
                 </div>
                 <div class="form-group">
                     <label for="subKategori">Subkategori</label>
-                    <input type="text" id="subKategori" placeholder="Contoh: AC, Lemari Es, Smart TV">
+                    <input type="text" id="subKategori" placeholder="Contoh: LED TV">
                 </div>
             </div>
 
@@ -208,26 +207,26 @@
                 <div class="grid-2">
                     <div class="form-group">
                         <label for="spek1">Spek 1</label>
-                        <input type="text" id="spek1" placeholder="Contoh: 0.5 PK">
+                        <input type="text" id="spek1" placeholder="Contoh: Direct Led Panel">
                     </div>
                     <div class="form-group">
                         <label for="spek2">Spek 2</label>
-                        <input type="text" id="spek2" placeholder="Contoh: 350 Watt">
+                        <input type="text" id="spek2" placeholder="Contoh: HD 720p Resolution">
                     </div>
                 </div>
                 <div class="grid-2">
                     <div class="form-group">
                         <label for="spek3">Spek 3</label>
-                        <input type="text" id="spek3" placeholder="Contoh: R32 Eco Friendly">
+                        <input type="text" id="spek3" placeholder="Contoh: Dynamic Color">
                     </div>
                     <div class="form-group">
                         <label for="spek4">Spek 4</label>
-                        <input type="text" id="spek4" placeholder="Contoh: Garansi 5 Tahun">
+                        <input type="text" id="spek4" placeholder="Contoh: 60Hz Native Refresh Rate">
                     </div>
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                     <label for="spek5">Spek 5</label>
-                    <input type="text" id="spek5" placeholder="Contoh: Triple Protection">
+                    <input type="text" id="spek5" placeholder="Contoh: 4 Picture Modes">
                 </div>
             </fieldset>
 
@@ -243,15 +242,11 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqnu2yJWk3Bb8JPSVy8ZSZxs5Ae4VGSNpRJl1j3Qgkoj-27FQX_ys4-8qyyyrbXJhQ/exec";
 
-        // Fungsi mengubah teks menjadi Title Case (Huruf Depan Kapital)
-        function toTitleCase(str) {
-            if (!str) return "-";
-            return str
-                .trim()
-                .toLowerCase()
-                .split(' ')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ');
+        // Fungsi mengambil nilai teks secara persis seperti yang diketik pengguna
+        function getExactValue(elementId) {
+            const el = document.getElementById(elementId);
+            const val = el ? el.value.trim() : "";
+            return val !== "" ? val : "-";
         }
 
         function tampilkanNotif(pesan, jenis) {
@@ -276,18 +271,18 @@
             spinner.style.display = 'block';
             btnText.innerText = 'Sedang Menyimpan...';
 
-            // Mengonversi data ke format Title Case sebelum dikirim ke Google Sheets
+            // Mengirimkan teks persis seperti yang diketikkan di form
             const payload = {
                 aksi: "tambah_barang",
-                brand: toTitleCase(document.getElementById('brand').value),
-                tipe: document.getElementById('tipe').value.trim().toUpperCase(), // Tipe tetap ALL CAPS (misal: GWC-05MOO5)
-                kategori: toTitleCase(document.getElementById('kategori').value),
-                subKategori: toTitleCase(document.getElementById('subKategori').value),
-                spek1: toTitleCase(document.getElementById('spek1').value),
-                spek2: toTitleCase(document.getElementById('spek2').value),
-                spek3: toTitleCase(document.getElementById('spek3').value),
-                spek4: toTitleCase(document.getElementById('spek4').value),
-                spek5: toTitleCase(document.getElementById('spek5').value)
+                brand: getExactValue('brand'),
+                tipe: getExactValue('tipe'),
+                kategori: getExactValue('kategori'),
+                subKategori: getExactValue('subKategori'),
+                spek1: getExactValue('spek1'),
+                spek2: getExactValue('spek2'),
+                spek3: getExactValue('spek3'),
+                spek4: getExactValue('spek4'),
+                spek5: getExactValue('spek5')
             };
 
             fetch(SCRIPT_URL, {
