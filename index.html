@@ -21,8 +21,24 @@
         .header p { color: #64748b; font-size: 14px; }
         .form-group { margin-bottom: 15px; }
         label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #334155; }
-        input[type="text"] { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; background-color: #fff; color: var(--text); transition: border-color 0.2s; }
-        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
+        
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fff;
+            color: var(--text);
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+        }
+        
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .spek-section { background: #f1f5f9; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px dashed #cbd5e1; }
         .spek-section legend { font-size: 13px; font-weight: bold; color: #475569; padding: 0 8px; }
@@ -37,13 +53,18 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .preview-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 6px; padding: 10px 14px; font-size: 12.5px; color: #92400e; margin-top: 15px; display: none; line-height: 1.6; }
         .preview-box b { color: #78350f; }
+        .info-box { background: #dbeafe; border: 1px solid #93c5fd; border-radius: 6px; padding: 10px 14px; font-size: 12.5px; color: #1e40af; margin-bottom: 15px; line-height: 1.6; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h2>Form Input Spesifikasi Barang</h2>
-            <p>Huruf besar-kecil otomatis rapi ✨</p>
+            <p>Kategori & SubKategori pilih dari dropdown ✨</p>
+        </div>
+
+        <div class="info-box">
+            💡 <b>Tips:</b> Pilih <b>Kategori</b> dulu, nanti <b>SubKategori</b> otomatis menyesuaikan pilihannya.
         </div>
 
         <form id="formKatalog" onsubmit="kirimData(event)">
@@ -60,12 +81,19 @@
 
             <div class="grid-2">
                 <div class="form-group">
-                    <label for="kategori">Kategori</label>
-                    <input type="text" id="kategori" required placeholder="Contoh: Elektronik" oninput="previewFormat()">
+                    <label for="kategori">Kategori <span style="color:#dc2626">*</span></label>
+                    <select id="kategori" required onchange="updateSubKategori()">
+                        <option value="">-- Pilih Kategori --</option>
+                        <option value="Elektronik">Elektronik</option>
+                        <option value="Gadget">Gadget</option>
+                        <option value="Rumah Tangga">Rumah Tangga</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label for="subKategori">Subkategori</label>
-                    <input type="text" id="subKategori" placeholder="Contoh: LED TV" oninput="previewFormat()">
+                    <label for="subKategori">SubKategori <span style="color:#dc2626">*</span></label>
+                    <select id="subKategori" required>
+                        <option value="">-- Pilih Kategori dulu --</option>
+                    </select>
                 </div>
             </div>
 
@@ -113,23 +141,87 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqnu2yJWk3Bb8JPSVy8ZSZxs5Ae4VGSNpRJl1j3Qgkoj-27FQX_ys4-8qyyyrbXJhQ/exec";
 
         /* ======================================================
-           AUTO-FORMAT HURUF BESAR-KECIL
+           DATA SUBKATEGORI PER KATEGORI
            ====================================================== */
-        
-        // Daftar singkatan yang HARUS tetap HURUF BESAR
+        const SUBKATEGORI = {
+            "Elektronik": [
+                "LED TV",
+                "Air Conditioner",
+                "Air Cooler",
+                "Freezer Box",
+                "Lemari Es 2 Pintu",
+                "Mesin Cuci Top Loading",
+                "Mesin Cuci Front Loading",
+                "Mesin Cuci 2 Tabung",
+                "Side By Side",
+                "Multidoor",
+                "Mini Bar",
+                "Showcase",
+                "Display Cooler",
+                "Dryer",
+                "Wash&Dryer",
+                "Water Heater",
+                "Dispenser Galon Bawah",
+                "Kompor Tanam",
+                "Cooker Hood",
+                "Vacum Cleaner",
+                "Rice Cooker"
+            ],
+            "Gadget": [
+                "Iphone",
+                "Laptop",
+                "Smartphone",
+                "Tablet"
+            ],
+            "Rumah Tangga": [
+                "Rice Cooker",
+                "Setrika",
+                "Blender",
+                "Kipas Angin",
+                "Kompor Gas",
+                "Peralatan Dapur",
+                "Peralatan Kebersihan"
+            ]
+        };
+
+        /* ======================================================
+           UPDATE SUBKATEGORI OTOMATIS
+           ====================================================== */
+        function updateSubKategori() {
+            const kategori = document.getElementById("kategori").value;
+            const subSelect = document.getElementById("subKategori");
+            
+            subSelect.innerHTML = "";
+            
+            if (!kategori) {
+                subSelect.innerHTML = '<option value="">-- Pilih Kategori dulu --</option>';
+                return;
+            }
+            
+            const daftar = SUBKATEGORI[kategori] || [];
+            subSelect.innerHTML = '<option value="">-- Pilih SubKategori --</option>';
+            daftar.forEach(sub => {
+                const opt = document.createElement("option");
+                opt.value = sub;
+                opt.textContent = sub;
+                subSelect.appendChild(opt);
+            });
+        }
+
+        /* ======================================================
+           AUTO-FORMAT UNTUK FIELD TEKS (BRAND, TIPE, SPEK)
+           ====================================================== */
         const SINGKATAN = [
             "USB", "HDMI", "TV", "AC", "LED", "LCD", "OLED", "QLED", "UHD", "FHD", "HD",
             "MP", "GB", "TB", "MB", "KG", "L", "ML", "W", "V", "HZ", "RPM", "PK", "BTU",
             "HDR", "DTS", "DLNA", "AI", "OS", "PC", "DVD", "CD", "AV", "HDD", "SSD",
-            "RAM", "ROM", "CPU", "GPU", "IPS", "TN", "VA", "AMOLED", "IPS", "NFC", "GPS",
-            "WIFI", "WI-FI", "LAN", "RJ45", "HDMI", "VGA", "DVI", "PCM", "ABS", "ECA",
-            "IP", "IPX", "IP54", "IP68", "RF", "IR", "UV", "DC", "AC", "R32", "R33", "R600A",
-            "C", "F", "COOL", "HOT", "SUS", "X-TOR", "PGM", "A+", "A++", "A+++", "XYZ",
-            "IG", "DDR", "DDR2", "DDR3", "DDR4", "DDR5", "PCI", "PCIe", "M.2", "NVME",
-            "SATA", "UFS", "LPDDR", "LPDDR4", "LPDDR4X", "LPDDR5", "SO-DIMM", "DIMM"
+            "RAM", "ROM", "CPU", "GPU", "IPS", "TN", "VA", "AMOLED", "NFC", "GPS",
+            "WIFI", "WI-FI", "LAN", "RJ45", "VGA", "DVI", "PCM", "ABS", "ECA",
+            "IP", "IPX", "IP54", "IP68", "RF", "IR", "UV", "DC", "R32", "R33", "R600A",
+            "DDR", "DDR2", "DDR3", "DDR4", "DDR5", "PCI", "PCIE", "M.2", "NVME",
+            "SATA", "UFS", "LPDDR", "LPDDR4", "LPDDR4X", "LPDDR5", "DIMM", "SO-DIMM"
         ];
 
-        // Perbaikan typo umum
         const PERBAIKAN = {
             "ASSISTEN": "Assistant",
             "ASSISTANT": "Assistant",
@@ -138,53 +230,33 @@
             "BLUETOOH": "Bluetooth"
         };
 
-        // Singkatan penting yang dipertahankan kapital
         function isSingkatan(kata) {
             const upper = kata.toUpperCase().replace(/[^A-Z0-9]/g, "");
             return SINGKATAN.includes(upper);
         }
 
-        // Format 1 kata
         function formatKata(kata) {
             if (!kata) return "";
-            
             const upper = kata.toUpperCase();
-            
-            // Cek typo
             if (PERBAIKAN[upper]) return PERBAIKAN[upper];
-            
-            // Cek singkatan
             if (isSingkatan(kata)) return upper;
-            
-            // Kalau ada angka, format khusus
             if (/\d/.test(kata)) {
-                // Contoh: "32inch" → "32Inch", "100liter" → "100Liter", "2tahun" → "2Tahun"
                 return kata.replace(/(\d+)([a-z])/gi, (m, num, huruf) => num + huruf.toUpperCase())
                            .replace(/^([a-z])/i, (m) => m.toUpperCase());
             }
-            
-            // Kata biasa: kapital di awal
             return kata.charAt(0).toUpperCase() + kata.slice(1).toLowerCase();
         }
 
-        // Format seluruh teks
         function autoFormat(teks) {
             if (!teks || teks.trim() === "" || teks === "-") return teks;
-            
-            // Pisah berdasarkan spasi
             return teks.split(/\s+/).map(kata => {
-                // Handle tanda hubung (contoh: "X-TOR" → "X-Tor")
                 if (kata.includes("-")) {
                     return kata.split("-").map(formatKata).join("-");
                 }
-                // Handle tanda baca di akhir (contoh: "USB," → "USB,")
                 return formatKata(kata);
             }).join(" ");
         }
 
-        /* ======================================================
-           AMBIL NILAI & FORMAT
-           ====================================================== */
         function getFormattedValue(elementId) {
             const el = document.getElementById(elementId);
             if (!el) return "-";
@@ -193,29 +265,37 @@
             return autoFormat(val);
         }
 
+        // Untuk dropdown — ambil langsung nilainya
+        function getDropdownValue(elementId) {
+            const el = document.getElementById(elementId);
+            if (!el) return "-";
+            const val = el.value.trim();
+            return val === "" ? "-" : val;
+        }
+
         /* ======================================================
-           PREVIEW FORMAT (Real-time)
+           PREVIEW FORMAT
            ====================================================== */
         function previewFormat() {
             const box = document.getElementById("previewBox");
             const brand = getFormattedValue("brand");
             const tipe = getFormattedValue("tipe");
-            const kategori = getFormattedValue("kategori");
-            const subKategori = getFormattedValue("subKategori");
+            const kategori = getDropdownValue("kategori");
+            const subKategori = getDropdownValue("subKategori");
             const spek1 = getFormattedValue("spek1");
             const spek2 = getFormattedValue("spek2");
             const spek3 = getFormattedValue("spek3");
             const spek4 = getFormattedValue("spek4");
             const spek5 = getFormattedValue("spek5");
             
-            // Cek apakah ada yang beda dari input asli
             let adaPerubahan = false;
             const cek = (id, formatted) => {
-                const asli = document.getElementById(id).value.trim();
+                const el = document.getElementById(id);
+                if (!el) return;
+                const asli = el.value.trim();
                 if (asli !== "" && asli !== formatted && formatted !== "-") adaPerubahan = true;
             };
-            cek("brand", brand); cek("tipe", tipe); cek("kategori", kategori);
-            cek("subKategori", subKategori);
+            cek("brand", brand); cek("tipe", tipe);
             cek("spek1", spek1); cek("spek2", spek2); cek("spek3", spek3);
             cek("spek4", spek4); cek("spek5", spek5);
 
@@ -261,13 +341,12 @@
             spinner.style.display = 'block';
             btnText.innerText = 'Sedang Menyimpan...';
 
-            // Kirim data yang sudah diformat
             const payload = {
                 aksi: "tambah_barang",
                 brand: getFormattedValue('brand'),
                 tipe: getFormattedValue('tipe'),
-                kategori: getFormattedValue('kategori'),
-                subKategori: getFormattedValue('subKategori'),
+                kategori: getDropdownValue('kategori'),
+                subKategori: getDropdownValue('subKategori'),
                 spek1: getFormattedValue('spek1'),
                 spek2: getFormattedValue('spek2'),
                 spek3: getFormattedValue('spek3'),
@@ -284,6 +363,7 @@
                 if (data.status === "sukses") {
                     tampilkanNotif("Berhasil! Data barang masuk ke sheet KATALOG.", "sukses");
                     document.getElementById('formKatalog').reset();
+                    document.getElementById('subKategori').innerHTML = '<option value="">-- Pilih Kategori dulu --</option>';
                     document.getElementById('previewBox').style.display = "none";
                 } else {
                     tampilkanNotif("Gagal: " + data.pesan, "gagal");
